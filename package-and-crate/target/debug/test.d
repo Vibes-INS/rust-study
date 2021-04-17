@@ -1,0 +1,1 @@
+/Users/ins/Documents/Code/rust-study/package-and-crate/target/debug/test: /Users/ins/Documents/Code/rust-study/package-and-crate/src/lib.rs /Users/ins/Documents/Code/rust-study/package-and-crate/src/main.rs
