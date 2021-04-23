@@ -1,42 +1,42 @@
 use std::collections::HashMap;
-use std::str::FromStr;
-use std::io::Error;
-use std::io::Read;
+use std::io::Error as IOError;
+use std::error::Error;
 use std::fs;
 
 struct Todo {
-    map: HashMap<String, bool>
+    map: HashMap<String, bool>,
+    filename: String
 }
 
 impl Todo {
-    fn new() -> Result<Todo, Error> {
-        let mut file = fs::OpenOptions::new()
+    fn new(filename: String) -> Result<Todo, IOError> {
+        let file = fs::OpenOptions::new()
             .write(true)
             .create(true)
             .read(true)
-            .open("db.txt")?;
-        let mut content = String::new();
-        file.read_to_string(&mut content)?;
-        let map: HashMap<String, bool> = content
-            .lines()
-            .map(|line| line.splitn(2, '\t').collect::<Vec<&str>>())
-            .map(|v| (v[0], v[1]))
-            .map(|(k, v)| (String::from(k), bool::from_str(v).unwrap()))
-            .collect();
-        Ok(Todo { map })
+            .open(&filename)?;
+        match serde_json::from_reader(file) {
+            Ok(map) => Ok(Todo { map, filename }),
+            Err(e) if e.is_eof() => Ok(Todo {
+                map: HashMap::new(),
+                filename,
+            }),
+            Err(e) => panic!("An error occured: {}", e),
+        }
+    }
+
+    fn save(self) -> Result<(), Box<dyn Error>> {
+        let f = std::fs::OpenOptions::new()
+            .write(true)
+            .create(true)
+            .open(self.filename)?;
+
+        serde_json::to_writer_pretty(f, &self.map)?;
+        Ok(())
     }
 
     fn insert(&mut self, key: String) -> () {
         self.map.insert(key, true);
-    }
-
-    fn save(self) -> Result<(), Error> {
-        let mut content = String::new();
-        for (k, v) in self.map {
-            let record = format!("{}\t{}\n", k, v);
-            content.push_str(&record);
-        }
-        fs::write("db.txt", content)
     }
 
     fn complete(&mut self, key: &String) -> Option<()> {
@@ -51,7 +51,7 @@ fn main() {
     let action = std::env::args().nth(1).expect("Please specify an action");
     let item = std::env::args().nth(2).expect("Please specify an item");
 
-    let mut todo = Todo::new().expect("Initialisation of db failed");
+    let mut todo = Todo::new(String::from("db.json")).expect("Initialisation of db failed");
     if action == "add" {
         todo.insert(item);
         match todo.save() {
