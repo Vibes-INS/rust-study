@@ -3,8 +3,14 @@
 //
 // createApp(App).mount('#app')
 
-import init, { Counter } from '@rsw/demo'
+import init, { Counter, CounterChildren } from '@rsw/demo'
 
 init().then(() => {
-  const counter = Counter.new('10', 10)
+  const counter = new Counter()
+  const children = counter.get_children()
+  console.log(counter.add())
+  console.log(counter.add())
+  console.log(counter.add())
+  console.log(children)
+
 })

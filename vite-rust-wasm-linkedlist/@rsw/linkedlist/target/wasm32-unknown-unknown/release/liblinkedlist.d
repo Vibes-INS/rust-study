@@ -1,0 +1,1 @@
+/Users/ins/Documents/Code/rust-study/vite-rust-wasm-linkedlist/@rsw/linkedlist/target/wasm32-unknown-unknown/release/liblinkedlist.rlib: /Users/ins/Documents/Code/rust-study/vite-rust-wasm-linkedlist/@rsw/linkedlist/src/lib.rs /Users/ins/Documents/Code/rust-study/vite-rust-wasm-linkedlist/@rsw/linkedlist/src/single_linked_list.rs build.rs

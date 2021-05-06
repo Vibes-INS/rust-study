@@ -1,0 +1,21 @@
+[package]
+name = "linkedlist"
+version = "0.1.0"
+authors = ["Vibes-ins <j893412899@outlook.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[profile.release]
+lto = true
+opt-level = "s"
+
+[dependencies]
+wasm-bindgen = "0.2.70"
+js-sys = "0.3"

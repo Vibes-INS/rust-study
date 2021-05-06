@@ -1,47 +1,38 @@
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::convert::{FromWasmAbi, IntoWasmAbi};
+use std::marker::Copy;
 
 #[wasm_bindgen]
-pub struct HTMLDivElement {
-    id: u32,
-    children: Vec<HTMLSpanElement>
+// #[derive(Clone, Copy)]
+pub struct Counter {
+    val: i32,
+    children: Option<Box<Counter>>
 }
 
-pub struct HTMLSpanElement {
-    id: u32,
-    content: String
-}
+#[wasm_bindgen]
+impl Counter {
 
-impl HTMLDivElement {
-    pub fn new(id: u32) -> HTMLDivElement {
-        let el = HTMLSpanElement {
-            id: id + 1,
-            content: String::from("Test")
-        };
-
-        HTMLDivElement {
-            id,
-            children: vec![el]
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Counter {
+        Counter {
+            val: 0,
+            children: None,
         }
     }
 
-    pub fn get_children(&self) -> Vec<HTMLSpanElement> {
-        self.children.clone()
+    pub fn add(&mut self) -> i32 {
+        self.val += 1;
+        if let Some(mut children) = self.children {
+            children.add();
+        }
+
+        self.val
     }
 
-    pub fn get_children_count(&self) -> usize {
-        self.children.len()
+    pub fn set_children(&mut self, children: Counter) {
+        self.children = children
     }
-}
 
-// impl FromWasmAbi for HTMLSpanElement {
-//     fn from_abi(&self) -> u32 {
-//         100
-//     }
-// }
-
-impl IntoWasmAbi for HTMLSpanElement {
-    fn into_abi(&self) -> u32 {
-        100
+    pub fn get_children(&self) -> Option<Counter> {
+        self.children
     }
 }
