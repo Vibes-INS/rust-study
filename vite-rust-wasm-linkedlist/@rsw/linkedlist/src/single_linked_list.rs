@@ -24,10 +24,22 @@ impl LinkedList {
         }
     }
 
-    fn to_vec() -> Vec<i32> {
-        let mut result = vec![];
-        result.push(10);
-        result
+    pub fn to_vec(&mut self) -> js_sys::Uint32Array{
+        let mut res: Vec<i32> = Vec::new();
+        let head = self.head.clone().take();
+        loop {
+            match head {
+                Some(list_node) => {
+                    res.push(list_node);
+                    head = list_node.next;
+                }
+
+                None => {
+                    break;
+                }
+            }
+        }
+        js_sys::Uint32Array::from(&res[..])
     }
 
     pub fn to_array(&mut self) -> js_sys::Uint32Array {

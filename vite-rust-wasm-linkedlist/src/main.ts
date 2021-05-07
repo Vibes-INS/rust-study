@@ -12,6 +12,6 @@ init().then(() => {
   linkedList.append(2)
   linkedList.append(3)
 
-  console.log(linkedList.test())
+  console.log(linkedList.to_vec())
   // console.log(linkedList, linkedList.print(linkedList.pop()))
 })
